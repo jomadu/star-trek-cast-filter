@@ -1,14 +1,19 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { getCharacterWithId } from "../utils";
 
-const CharacterResultDetail = (props) => {
+const CharacterResultDetail = ({id}) => {
+  const character = getCharacterWithId(id);
+
   return (
     <div>
-      <p>CharacterResultDetail</p>
+      <p>id: {character.id}, name: {character.characterName}</p>
     </div>
   );
 };
 
-CharacterResultDetail.propTypes = {};
+CharacterResultDetail.propTypes = {
+  id = PropTypes.number
+};
 
 export default CharacterResultDetail;
