@@ -9,41 +9,92 @@ export const getCharactersMatchingName = (name) => {
   return characterData.filter((character) => character.name === name);
 };
 
-export const useFetch = (url, options) => {
-  const [response, setResponse] = useState(null);
+export const useFetch = (initialUrl, initialMethod) => {
+  const [url, setUrl] = useState(initialUrl);
+  const [method, setMethod] = useState(initialMethod);
+  const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const res = await fetch(url, options);
-        const json = await res.json();
-        setResponse(json);
-        setIsLoading(false);
-      } catch (error) {
-        setError(error);
-      }
-    };
-    fetchData();
-  }, [url, options]);
-  return [response, error, isLoading];
+    setData(null);
+    setIsLoading(true);
+    setError(null);
+
+    if (url && method) {
+      fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setData(data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          setError(error);
+          setIsLoading(false);
+        });
+    } else {
+      setIsLoading(false);
+    }
+  }, [url, method, setData, setIsLoading, setError]);
+  return [data, isLoading, error, setUrl, setMethod];
 };
 
-export const useFetchCharacter = (id) => {
-  const url = id;
-  const options = {};
-  return useFetch(url, options);
+export const useGetEpisode = (initialUid) => {
+  const createUrl = (uid) => `http://stapi.co/api/v1/rest/episode?uid=${uid}`;
+
+  const [uid, setUid] = useState(initialUid);
+  const [data, isLoading, error, setUrl] = useFetch(
+    uid && createUrl(uid),
+    "GET"
+  );
+
+  useEffect(() => {
+    if (uid) {
+      setUrl(createUrl(uid));
+    }
+  }, [uid, setUrl]);
+
+  return [data, isLoading, error, setUid];
 };
 
-export const useFetchEpisode = (uid) => {
-  const url = `http://stapi.co/api/v1/rest/episode?uid=${uid}`;
-  const options = {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-  };
-  return useFetch(url, options);
+export const useGetCharacter = (initialUid) => {
+  const createUrl = (uid) => `http://stapi.co/api/v1/rest/character?uid=${uid}`;
+
+  const [uid, setUid] = useState(initialUid);
+  const [data, isLoading, error, setUrl] = useFetch(
+    uid && createUrl(uid),
+    "GET"
+  );
+
+  useEffect(() => {
+    if (uid) {
+      setUrl(createUrl(uid));
+    }
+  }, [uid, setUrl]);
+
+  return [data, isLoading, error, setUid];
+};
+
+export const useSearchCharacter = (initialName) => {
+  const createUrl = (name) =>
+    `http://stapi.co/api/v1/rest/character/search?name=${name}`;
+
+  const [name, setName] = useState(initialName);
+  const [data, isLoading, error, setUrl] = useFetch(
+    name && createUrl(name),
+    "POST"
+  );
+
+  useEffect(() => {
+    if (name) {
+      setUrl(createUrl(name));
+    }
+  }, [name, setUrl]);
+
+  return [data, isLoading, error, setName];
 };

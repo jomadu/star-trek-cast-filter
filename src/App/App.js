@@ -1,12 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Adder from "../Adder/Adder";
 import Cast from "../Cast/Cast";
 import Episodes from "../Episodes/Episodes";
-import CharacterAvatar from "../CharacterAvatar/CharacterAvatar";
-import CharacterResultListItem from "../CharacterResultListItem/CharacterResultListItem";
-import EpisodeResultDetail from "../EpisodeResultDetail/EpisodeResultDetail";
 import EpisodeResultListItem from "../EpisodeResultListItem/EpisodeResultListItem";
-import testData from "../testData.json";
 
 const App = () => {
   // const [characterSearchQuery, setCharacterSearchQuery] = useState("");

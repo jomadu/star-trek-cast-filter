@@ -1,20 +1,32 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { getCharacterWithId } from "../utils";
+import { useGetCharacter } from "../utils";
 
-const CharacterResultListItem = ({ id, selected, onSelect }) => {
-  const character = getCharacterWithId(id);
-  return (
-    <div>
-      <p onClick={onSelect}>
-        id: {character.id}, name: {character.characterName}
+const CharacterResultListItem = ({ uid, selected, onSelect }) => {
+  const [data, isLoading, error] = useGetCharacter(uid);
+
+  const handleClick = () => onSelect(uid);
+
+  var renderedComponent;
+  if (error) {
+    renderedComponent = <p>{error}</p>;
+  } else if (isLoading) {
+    renderedComponent = <p>loading...</p>;
+  } else if (data) {
+    console.log(data);
+    renderedComponent = (
+      <p>
+        {data.character.name}, {data.character.episodes.length} episodes
+        {selected ? " *" : ""}
       </p>
-    </div>
-  );
+    );
+  }
+
+  return <div onClick={handleClick}>{renderedComponent}</div>;
 };
 
 CharacterResultListItem.propTypes = {
-  id: PropTypes.number,
+  uid: PropTypes.string,
   selected: PropTypes.bool,
   onSelect: PropTypes.func,
 };

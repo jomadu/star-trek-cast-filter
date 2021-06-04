@@ -1,19 +1,33 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { getCharacterWithId } from "../utils";
+import { useGetCharacter } from "../utils";
 
-const CharacterResultDetail = ({id}) => {
-  const character = getCharacterWithId(id);
+const CharacterResultDetail = ({ uid }) => {
+  const [data, isLoading, error, setUid] = useGetCharacter(uid);
 
-  return (
-    <div>
-      <p>id: {character.id}, name: {character.characterName}</p>
-    </div>
-  );
+  useEffect(() => {
+    setUid(uid);
+  }, [uid]);
+
+  var renderedComponent;
+  if (error) {
+    renderedComponent = <p>{error}</p>;
+  } else if (isLoading) {
+    renderedComponent = <p>loading...</p>;
+  } else if (data) {
+    renderedComponent = (
+      <p>
+        Name: {data.character.name}, Serial Number:
+        {data.character.serialNumber}
+      </p>
+    );
+  }
+
+  return <div>{renderedComponent}</div>;
 };
 
 CharacterResultDetail.propTypes = {
-  id = PropTypes.number
+  uid: PropTypes.string,
 };
 
 export default CharacterResultDetail;

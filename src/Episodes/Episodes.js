@@ -8,7 +8,7 @@ const Episodes = ({ characters }) => {
     if (selectedEpisode !== null && !characters.includes(selectedEpisode)) {
       setSelectedEpisode(null);
     }
-  }, [characters]);
+  }, [selectedEpisode, characters, setSelectedEpisode]);
 
   const episodeListItems = characters.map((id) => (
     <li onClick={() => setSelectedEpisode(id)} key={id}>
@@ -26,7 +26,7 @@ const Episodes = ({ characters }) => {
 };
 
 Episodes.propTypes = {
-  characters: PropTypes.arrayOf(PropTypes.number).isRequired,
+  characters: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default Episodes;

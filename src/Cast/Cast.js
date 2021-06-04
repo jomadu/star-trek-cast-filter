@@ -15,7 +15,7 @@ const Cast = ({ characters, onRemoveCharacter }) => {
 };
 
 Cast.propTypes = {
-  characters: PropTypes.arrayOf(PropTypes.number).isRequired,
+  characters: PropTypes.arrayOf(PropTypes.string).isRequired,
   onRemoveCharacter: PropTypes.func.isRequired,
 };
 
