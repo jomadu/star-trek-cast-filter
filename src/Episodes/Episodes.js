@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { useGetCharacters, useGetEpisode } from "../utils";
+import { useGetCharacters, useGetEpisode, usePagination } from "../utils";
+import Pagination from "../Pagination/Pagination";
 import EpisodeResultListItem from "../EpisodeResultListItem/EpisodeResultListItem";
 
 const Episodes = ({ characters }) => {
-  const [selected, setSelected] = useState(null);
+  const [selectedRow, setSelectedRow] = useState(null);
   const [episodes, setEpisodes] = useState([]);
   const [
     characterData,
@@ -14,12 +15,31 @@ const Episodes = ({ characters }) => {
   ] = useGetCharacters(characters);
   const [episode, episodeIsLoading, episodeError, setUid] = useGetEpisode(null);
 
+  const {
+    pageData,
+    currentPage,
+    numPages,
+    pageGroup,
+    setData,
+    setItemsPerPage,
+    setPageGroupLimit,
+    goToPage,
+    goToFirstPage,
+    goToLastPage,
+    goToPreviousPage,
+    goToNextPage,
+  } = usePagination(null, 5, 3);
+
+  useEffect(() => {
+    setData(episodes);
+  }, [episodes]);
+
   useEffect(() => {
     setCharacterUids(characters);
   }, [characters, setCharacterUids]);
 
   useEffect(() => {
-    setSelected(null);
+    setSelectedRow(null);
     setEpisodes([]);
     if (characterDataError) {
       console.log("error");
@@ -47,30 +67,43 @@ const Episodes = ({ characters }) => {
   }, [characterData, characterDataIsLoading, characterDataError]);
 
   useEffect(() => {
-    setUid(selected);
-  }, [selected, setUid]);
+    if (pageData.length > selectedRow) {
+      setUid(pageData[selectedRow]);
+    }
+  }, [selectedRow, setUid]);
 
-  const handleSelectResultListItem = (uid) => () => setSelected(uid);
+  const handleSelectResultListItem = (row) => () => setSelectedRow(row);
 
-  var resultsComp;
-  if (episodes.length > 0) {
-    resultsComp = (
-      <ul>
-        {episodes.map((uid) => (
-          <li key={uid}>
+  const getEpisodes = () => {
+    var results;
+    results = (
+      <div>
+        <ul>
+          {pageData.map((uid, idx) => (
             <EpisodeResultListItem
               uid={uid}
-              onSelect={handleSelectResultListItem(uid)}
-              selected={uid === selected}
+              onSelect={handleSelectResultListItem(idx)}
+              selected={idx === selectedRow}
+              key={uid}
             />
-          </li>
-        ))}
-      </ul>
+          ))}
+        </ul>
+        <Pagination
+          pageGroup={pageGroup}
+          currentPage={currentPage}
+          onGoToPageClicked={goToPage}
+          onGoToFirstPageClicked={goToFirstPage}
+          onGoToLastPageClicked={goToLastPage}
+          onGoToPreviousPageClicked={goToPreviousPage}
+          onGoToNextPageClicked={goToNextPage}
+        />
+      </div>
     );
-  }
+    return results;
+  };
 
   var detailComp;
-  if (selected) {
+  if (selectedRow) {
     if (episodeError) {
       detailComp = <p>{episodeError}</p>;
     } else if (episodeIsLoading) {
@@ -83,7 +116,7 @@ const Episodes = ({ characters }) => {
   return (
     <div>
       <h2>Episodes</h2>
-      {resultsComp}
+      {getEpisodes()}
       {detailComp}
     </div>
   );

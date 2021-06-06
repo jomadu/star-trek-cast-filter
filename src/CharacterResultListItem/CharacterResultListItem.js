@@ -7,22 +7,18 @@ const CharacterResultListItem = ({ uid, selected, onSelect }) => {
 
   const handleClick = () => onSelect(uid);
 
-  var renderedComponent;
+  var text;
   if (error) {
-    renderedComponent = <p>{error}</p>;
+    text = JSON.stringify(error);
   } else if (isLoading) {
-    renderedComponent = <p>loading...</p>;
+    text = "Loading...";
   } else if (data) {
-    console.log(data);
-    renderedComponent = (
-      <p>
-        {data.character.name}, {data.character.episodes.length} episodes
-        {selected ? " *" : ""}
-      </p>
-    );
+    text = `${data.character.name}, ${
+      data.character.episodes.length
+    } episodes ${selected ? " *" : ""}`;
   }
 
-  return <div onClick={handleClick}>{renderedComponent}</div>;
+  return <li onClick={handleClick}>{text}</li>;
 };
 
 CharacterResultListItem.propTypes = {

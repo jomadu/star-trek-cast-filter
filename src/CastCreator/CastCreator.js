@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { useSearchCharacter } from "../utils";
+import { useSearchCharacter, usePagination } from "../utils";
 import CharacterResultListItem from "../CharacterResultListItem/CharacterResultListItem";
 import CharacterResultDetail from "../CharacterResultDetail/CharacterResultDetail";
+import CharacterResultList from "../CharacterResultList/CharacterResultList";
+import Pagination from "../Pagination/Pagination";
+import CharacterAvatar from "../CharacterAvatar/CharacterAvatar";
 
-const CastCreator = ({ characters, onAddCharacter, onRemoveCharacter }) => {
+const CastCreatorOld = ({ characters, onAddCharacter, onRemoveCharacter }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, isLoading, error, name, setName] =
     useSearchCharacter(searchTerm);
@@ -93,10 +96,144 @@ const CastCreator = ({ characters, onAddCharacter, onRemoveCharacter }) => {
         <button type="submit">Search</button>
       </form>
       {searchResultsTitleComp}
-      {searchResultsComp}
+      <CharacterResultList />
       {detailsComp}
       <h2>Cast</h2>
       {castComp}
+    </div>
+  );
+};
+
+const CastCreator = ({ characters, onAddCharacter, onRemoveCharacter }) => {
+  // state
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, isLoading, error, name, setName] =
+    useSearchCharacter(searchTerm);
+  const {
+    pageData,
+    currentPage,
+    numPages,
+    pageGroup,
+    setData,
+    setItemsPerPage,
+    setPageGroupLimit,
+    goToPage,
+    goToFirstPage,
+    goToLastPage,
+    goToPreviousPage,
+    goToNextPage,
+  } = usePagination(null, 5, 3);
+  const [selectedRow, setSelectedRow] = useState(null);
+
+  useEffect(() => {
+    setSelectedRow(null);
+  }, [currentPage]);
+
+  const handleSearchTermChanged = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSearch = (event) => {
+    setName(searchTerm);
+    event.preventDefault();
+  };
+
+  const handleSelected = (row) => () => {
+    console.log(`selected row: ${row}`);
+    if (row == selectedRow) {
+      setSelectedRow(null);
+    } else {
+      setSelectedRow(row);
+    }
+  };
+
+  const handleAddCharacter = (uid) => () => onAddCharacter(uid);
+  const handleRemoveCharacter = (uid) => () => onRemoveCharacter(uid);
+
+  // When searchResults changes, update the data
+  useEffect(() => {
+    setData(searchResults?.characters.map((c) => c.uid));
+  }, [searchResults]);
+
+  const getSearchResultsComp = () => {
+    var title;
+    var results;
+    if (error) {
+      title = <h2>Error when searching: "{name}"</h2>;
+    } else if (isLoading) {
+      title = <h2>Searching for "{name}" ...</h2>;
+    } else if (searchResults) {
+      title = <h2>Results for "{name}":</h2>;
+      results = (
+        <div>
+          <ul>
+            {pageData.map((uid, idx) => (
+              <CharacterResultListItem
+                uid={uid}
+                onSelect={handleSelected(idx)}
+                selected={idx === selectedRow}
+                key={uid}
+              />
+            ))}
+          </ul>
+          <Pagination
+            pageGroup={pageGroup}
+            currentPage={currentPage}
+            onGoToPageClicked={goToPage}
+            onGoToFirstPageClicked={goToFirstPage}
+            onGoToLastPageClicked={goToLastPage}
+            onGoToPreviousPageClicked={goToPreviousPage}
+            onGoToNextPageClicked={goToNextPage}
+          />
+        </div>
+      );
+    }
+    return (
+      <div>
+        {title}
+        {results}
+      </div>
+    );
+  };
+
+  const getDetailsComp = () => {
+    return selectedRow ? (
+      <div>
+        <CharacterResultDetail uid={pageData[selectedRow]} />
+        <button
+          type="button"
+          value="Add"
+          onClick={handleAddCharacter(pageData[selectedRow])}
+        >
+          Add
+        </button>
+      </div>
+    ) : null;
+  };
+
+  const getCastComp = () => {
+    return characters.map((uid) => (
+      <CharacterAvatar
+        uid={uid}
+        onRemove={handleRemoveCharacter(uid)}
+        key={uid}
+      />
+    ));
+  };
+
+  return (
+    <div>
+      <form onSubmit={handleSearch}>
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={handleSearchTermChanged}
+        />
+        <button type="submit">Search</button>
+      </form>
+      {getSearchResultsComp()}
+      {getDetailsComp()}
+      {getCastComp()}
     </div>
   );
 };
