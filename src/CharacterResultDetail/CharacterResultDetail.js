@@ -7,7 +7,7 @@ const CharacterResultDetail = ({ uid }) => {
 
   useEffect(() => {
     setUid(uid);
-  }, [uid]);
+  }, [uid, setUid]);
 
   var renderedComponent;
   if (error) {

@@ -1,13 +1,15 @@
-import characterData from "./testData.json";
 import { useEffect, useState } from "react";
 
-export const getCharacterWithId = (id) => {
-  console.log(`trying id ${id}`);
-  return characterData.find((character) => character.id === id);
-};
-export const getCharactersMatchingName = (name) => {
-  return characterData.filter((character) => character.name === name);
-};
+const fetchWrapper = (url, method) =>
+  fetch(url, {
+    method,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+  });
+
+const createGetCharacterUrl = (uid) =>
+  `http://stapi.co/api/v1/rest/character?uid=${uid}`;
 
 export const useFetch = (initialUrl, initialMethod) => {
   const [url, setUrl] = useState(initialUrl);
@@ -22,12 +24,7 @@ export const useFetch = (initialUrl, initialMethod) => {
     setError(null);
 
     if (url && method) {
-      fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      })
+      fetchWrapper(url, method)
         .then((response) => response.json())
         .then((data) => {
           setData(data);
@@ -40,18 +37,47 @@ export const useFetch = (initialUrl, initialMethod) => {
     } else {
       setIsLoading(false);
     }
-  }, [url, method, setData, setIsLoading, setError]);
+  }, [url, method]);
   return [data, isLoading, error, setUrl, setMethod];
+};
+
+export const useFetchParallel = (initialUrls, initialMethod) => {
+  const [urls, setUrls] = useState(initialUrls);
+  const [method, setMethod] = useState(initialMethod);
+  const [data, setData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setData(null);
+    setIsLoading(true);
+    setError(null);
+    if (urls) {
+      Promise.all(
+        urls.map((url, index) =>
+          fetchWrapper(url, method).then((response) => response.json())
+        )
+      )
+        .then((responses) => {
+          setData(responses);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          setError(error);
+          setIsLoading(false);
+        });
+    } else {
+      setIsLoading(false);
+    }
+  }, [urls, method]);
+  return [data, isLoading, error, setUrls, setMethod];
 };
 
 export const useGetEpisode = (initialUid) => {
   const createUrl = (uid) => `http://stapi.co/api/v1/rest/episode?uid=${uid}`;
 
   const [uid, setUid] = useState(initialUid);
-  const [data, isLoading, error, setUrl] = useFetch(
-    uid && createUrl(uid),
-    "GET"
-  );
+  const [data, isLoading, error, setUrl] = useFetch(null, "GET");
 
   useEffect(() => {
     if (uid) {
@@ -63,21 +89,27 @@ export const useGetEpisode = (initialUid) => {
 };
 
 export const useGetCharacter = (initialUid) => {
-  const createUrl = (uid) => `http://stapi.co/api/v1/rest/character?uid=${uid}`;
-
   const [uid, setUid] = useState(initialUid);
-  const [data, isLoading, error, setUrl] = useFetch(
-    uid && createUrl(uid),
-    "GET"
-  );
+  const [data, isLoading, error, setUrl] = useFetch(null, "GET");
 
   useEffect(() => {
     if (uid) {
-      setUrl(createUrl(uid));
+      setUrl(createGetCharacterUrl(uid));
     }
   }, [uid, setUrl]);
 
   return [data, isLoading, error, setUid];
+};
+
+export const useGetCharacters = (initialUids) => {
+  const [uids, setUids] = useState(initialUids);
+  const [data, isLoading, error, setUrls] = useFetchParallel(null, "GET");
+
+  useEffect(() => {
+    setUrls(uids.map((uid) => createGetCharacterUrl(uid)));
+  }, [uids, setUrls]);
+
+  return [data, isLoading, error, setUids];
 };
 
 export const useSearchCharacter = (initialName) => {
@@ -85,16 +117,28 @@ export const useSearchCharacter = (initialName) => {
     `http://stapi.co/api/v1/rest/character/search?name=${name}`;
 
   const [name, setName] = useState(initialName);
-  const [data, isLoading, error, setUrl] = useFetch(
-    name && createUrl(name),
+  const [data, setData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const [fetchResponse, fetchIsLoading, fetchError, setFetchUrl] = useFetch(
+    null,
     "POST"
   );
 
   useEffect(() => {
     if (name) {
-      setUrl(createUrl(name));
+      setData(fetchResponse);
+      setIsLoading(fetchIsLoading);
+      setError(fetchError);
+      setFetchUrl(createUrl(name));
+    } else {
+      setData(null);
+      setIsLoading(false);
+      setError(null);
+      setFetchUrl(null);
     }
-  }, [name, setUrl]);
+  }, [name, fetchResponse, fetchIsLoading, fetchError, setFetchUrl]);
 
-  return [data, isLoading, error, setName];
+  return [data, isLoading, error, name, setName];
 };
