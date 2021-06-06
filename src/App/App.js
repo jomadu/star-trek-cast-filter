@@ -16,32 +16,6 @@ const App = () => {
   const handleRemoveCharacter = (id) => {
     setCharacters(characters.filter((_id) => _id !== id));
   };
-
-  const testData = [...Array(100).keys()].map((i) => {
-    return {
-      uid: i,
-      name: "flarp",
-    };
-  });
-
-  const {
-    pageData,
-    currentPage,
-    numPages,
-    pageGroup,
-    setData,
-    setItemsPerPage,
-    setPageGroupLimit,
-    goToPage,
-    goToFirstPage,
-    goToLastPage,
-    goToPreviousPage,
-    goToNextPage,
-  } = usePagination(testData, 5, 3);
-
-  const dataItems = pageData.map((d) => <div>{JSON.stringify(d)}</div>);
-
-  console.log(testData);
   return (
     <div>
       <h1>Star Trek Cast Filter</h1>

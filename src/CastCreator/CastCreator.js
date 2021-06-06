@@ -7,13 +7,11 @@ import CharacterResultList from "../CharacterResultList/CharacterResultList";
 import Pagination from "../Pagination/Pagination";
 import CharacterAvatar from "../CharacterAvatar/CharacterAvatar";
 
-const CastCreatorOld = ({ characters, onAddCharacter, onRemoveCharacter }) => {
+const CastCreator = ({ characters, onAddCharacter, onRemoveCharacter }) => {
+  // Searching
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, isLoading, error, name, setName] =
     useSearchCharacter(searchTerm);
-  const [selected, setSelected] = useState("");
-
-  console.log(searchResults);
 
   const handleSearchTermChanged = (event) => {
     setSearchTerm(event.target.value);
@@ -24,91 +22,7 @@ const CastCreatorOld = ({ characters, onAddCharacter, onRemoveCharacter }) => {
     event.preventDefault();
   };
 
-  const handleOnSelectSearchResult = (uid) => () => setSelected(uid);
-  const handleAddCharacter = (uid) => () => onAddCharacter(uid);
-  const handleRemoveCharacter = (uid) => () => onRemoveCharacter(uid);
-
-  var searchResultsTitleComp;
-  var searchResultsComp;
-  if (error) {
-    searchResultsTitleComp = <p>{error}</p>;
-  } else if (isLoading) {
-    searchResultsTitleComp = <h2>Searching for: "{name}"</h2>;
-    searchResultsComp = <p>loading...</p>;
-  } else {
-    searchResultsTitleComp = <h2>Search Results for: "{name}"</h2>;
-    searchResultsComp = (
-      <div>
-        {searchResults && (
-          <ul>
-            {searchResults.characters.map((c) => (
-              <li key={c.uid}>
-                <CharacterResultListItem
-                  uid={c.uid}
-                  onSelect={handleOnSelectSearchResult(c.uid)}
-                  selected={selected === c.uid}
-                />
-                <button
-                  type="button"
-                  value="Add"
-                  onClick={handleAddCharacter(c.uid)}
-                >
-                  Add
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    );
-  }
-
-  var detailsComp;
-  if (selected) {
-    detailsComp = <CharacterResultDetail uid={selected} />;
-  }
-
-  const castComp = (
-    <ul>
-      {characters.map((uid) => (
-        <li key={uid}>
-          <p>{uid}</p>
-          <button
-            type="button"
-            value="Remove"
-            onClick={handleRemoveCharacter(uid)}
-          >
-            Remove
-          </button>
-        </li>
-      ))}
-    </ul>
-  );
-
-  return (
-    <div>
-      <form onSubmit={handleSearch}>
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={handleSearchTermChanged}
-        />
-        <button type="submit">Search</button>
-      </form>
-      {searchResultsTitleComp}
-      <CharacterResultList />
-      {detailsComp}
-      <h2>Cast</h2>
-      {castComp}
-    </div>
-  );
-};
-
-const CastCreator = ({ characters, onAddCharacter, onRemoveCharacter }) => {
-  // state
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, isLoading, error, name, setName] =
-    useSearchCharacter(searchTerm);
+  // Pagination
   const {
     pageData,
     currentPage,
@@ -123,23 +37,19 @@ const CastCreator = ({ characters, onAddCharacter, onRemoveCharacter }) => {
     goToPreviousPage,
     goToNextPage,
   } = usePagination(null, 5, 3);
+
+  useEffect(() => {
+    setData(searchResults?.characters.map((c) => c.uid));
+  }, [searchResults]);
+
+  // Selection of Row
   const [selectedRow, setSelectedRow] = useState(null);
 
   useEffect(() => {
     setSelectedRow(null);
-  }, [currentPage]);
+  }, [pageData, currentPage, numPages, pageGroup]);
 
-  const handleSearchTermChanged = (event) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const handleSearch = (event) => {
-    setName(searchTerm);
-    event.preventDefault();
-  };
-
-  const handleSelected = (row) => () => {
-    console.log(`selected row: ${row}`);
+  const handleSelect = (row) => () => {
     if (row == selectedRow) {
       setSelectedRow(null);
     } else {
@@ -147,13 +57,9 @@ const CastCreator = ({ characters, onAddCharacter, onRemoveCharacter }) => {
     }
   };
 
+  // Adding and Removal of Characters
   const handleAddCharacter = (uid) => () => onAddCharacter(uid);
   const handleRemoveCharacter = (uid) => () => onRemoveCharacter(uid);
-
-  // When searchResults changes, update the data
-  useEffect(() => {
-    setData(searchResults?.characters.map((c) => c.uid));
-  }, [searchResults]);
 
   const getSearchResultsComp = () => {
     var title;
@@ -162,7 +68,7 @@ const CastCreator = ({ characters, onAddCharacter, onRemoveCharacter }) => {
       title = <h2>Error when searching: "{name}"</h2>;
     } else if (isLoading) {
       title = <h2>Searching for "{name}" ...</h2>;
-    } else if (searchResults) {
+    } else {
       title = <h2>Results for "{name}":</h2>;
       results = (
         <div>
@@ -170,7 +76,7 @@ const CastCreator = ({ characters, onAddCharacter, onRemoveCharacter }) => {
             {pageData.map((uid, idx) => (
               <CharacterResultListItem
                 uid={uid}
-                onSelect={handleSelected(idx)}
+                onSelect={handleSelect(idx)}
                 selected={idx === selectedRow}
                 key={uid}
               />
@@ -196,8 +102,8 @@ const CastCreator = ({ characters, onAddCharacter, onRemoveCharacter }) => {
     );
   };
 
-  const getDetailsComp = () => {
-    return selectedRow ? (
+  const getSelectedResultDetailsComp = () => {
+    return selectedRow !== null ? (
       <div>
         <CharacterResultDetail uid={pageData[selectedRow]} />
         <button
@@ -212,13 +118,18 @@ const CastCreator = ({ characters, onAddCharacter, onRemoveCharacter }) => {
   };
 
   const getCastComp = () => {
-    return characters.map((uid) => (
-      <CharacterAvatar
-        uid={uid}
-        onRemove={handleRemoveCharacter(uid)}
-        key={uid}
-      />
-    ));
+    return (
+      <div>
+        <h3>Cast:</h3>
+        {characters.map((uid) => (
+          <CharacterAvatar
+            uid={uid}
+            onRemove={handleRemoveCharacter(uid)}
+            key={uid}
+          />
+        ))}
+      </div>
+    );
   };
 
   return (
@@ -232,7 +143,7 @@ const CastCreator = ({ characters, onAddCharacter, onRemoveCharacter }) => {
         <button type="submit">Search</button>
       </form>
       {getSearchResultsComp()}
-      {getDetailsComp()}
+      {getSelectedResultDetailsComp()}
       {getCastComp()}
     </div>
   );

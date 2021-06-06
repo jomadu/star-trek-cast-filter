@@ -7,21 +7,16 @@ const EpisodeResultListItem = ({ uid, selected, onSelect }) => {
 
   const handleClick = () => onSelect();
 
-  var renderedComponent;
+  var text;
   if (error) {
-    renderedComponent = <p>{error}</p>;
+    text = "Error.";
   } else if (isLoading) {
-    renderedComponent = <p>loading</p>;
+    text = "Loading...";
   } else if (episode) {
-    renderedComponent = (
-      <p>
-        {episode.episode.title}
-        {selected && " *"}
-      </p>
-    );
+    text = `${episode.episode.title}${selected ? " *" : ""}`;
   }
 
-  return <div onClick={handleClick}>{renderedComponent}</div>;
+  return <li onClick={handleClick}>{text}</li>;
 };
 
 EpisodeResultListItem.propTypes = {

@@ -31,6 +31,10 @@ const Episodes = ({ characters }) => {
   } = usePagination(null, 5, 3);
 
   useEffect(() => {
+    setSelectedRow(null);
+  }, [pageData, currentPage, numPages, pageGroup]);
+
+  useEffect(() => {
     setData(episodes);
   }, [episodes]);
 
