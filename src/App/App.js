@@ -1,8 +1,6 @@
 import { useState } from "react";
 import Episodes from "../Episodes/Episodes";
 import CastCreator from "../CastCreator/CastCreator";
-import Pagination from "../Pagination/Pagination";
-import { usePagination } from "../utils";
 
 const App = () => {
   const [characters, setCharacters] = useState([]);

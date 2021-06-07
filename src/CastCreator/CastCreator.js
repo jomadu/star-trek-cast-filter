@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { useSearchCharacter, usePagination } from "../utils";
 import CharacterResultListItem from "../CharacterResultListItem/CharacterResultListItem";
 import CharacterResultDetail from "../CharacterResultDetail/CharacterResultDetail";
-import CharacterResultList from "../CharacterResultList/CharacterResultList";
 import Pagination from "../Pagination/Pagination";
 import CharacterAvatar from "../CharacterAvatar/CharacterAvatar";
 
@@ -29,8 +28,6 @@ const CastCreator = ({ characters, onAddCharacter, onRemoveCharacter }) => {
     numPages,
     pageGroup,
     setData,
-    setItemsPerPage,
-    setPageGroupLimit,
     goToPage,
     goToFirstPage,
     goToLastPage,
@@ -40,9 +37,9 @@ const CastCreator = ({ characters, onAddCharacter, onRemoveCharacter }) => {
 
   useEffect(() => {
     setData(searchResults?.characters.map((c) => c.uid));
-  }, [searchResults]);
+  }, [searchResults, setData]);
 
-  // Selection of Row
+  // Selection
   const [selectedRow, setSelectedRow] = useState(null);
 
   useEffect(() => {
@@ -50,7 +47,7 @@ const CastCreator = ({ characters, onAddCharacter, onRemoveCharacter }) => {
   }, [pageData, currentPage, numPages, pageGroup]);
 
   const handleSelect = (row) => () => {
-    if (row == selectedRow) {
+    if (row === selectedRow) {
       setSelectedRow(null);
     } else {
       setSelectedRow(row);
@@ -61,6 +58,7 @@ const CastCreator = ({ characters, onAddCharacter, onRemoveCharacter }) => {
   const handleAddCharacter = (uid) => () => onAddCharacter(uid);
   const handleRemoveCharacter = (uid) => () => onRemoveCharacter(uid);
 
+  // Components
   const getSearchResultsComp = () => {
     var title;
     var results;

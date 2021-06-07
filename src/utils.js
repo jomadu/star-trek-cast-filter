@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 const fetchWrapper = (url, method) =>
   fetch(url, {
@@ -148,13 +148,17 @@ export const usePagination = (
   initialItemsPerPage,
   initialPageGroupLimit
 ) => {
-  const calcNumPages = (dataArr, itemsPerPage) =>
-    data?.constructor === Array ? Math.ceil(dataArr.length / itemsPerPage) : 0;
-
   const [data, setData] = useState(initialData);
   const [itemsPerPage, setItemsPerPage] = useState(initialItemsPerPage);
-  const [numPages, setNumPages] = useState(calcNumPages(data, itemsPerPage));
   const [pageGroupLimit, setPageGroupLimit] = useState(initialPageGroupLimit);
+
+  const calcNumPages = useCallback(
+    () =>
+      data?.constructor === Array ? Math.ceil(data.length / itemsPerPage) : 0,
+    [data, itemsPerPage]
+  );
+
+  const [numPages, setNumPages] = useState(calcNumPages());
   const [pageData, setPageData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageGroup, setPageGroup] = useState([]);
@@ -177,8 +181,8 @@ export const usePagination = (
 
   // Effect to update the number of pages
   useEffect(() => {
-    setNumPages(calcNumPages(data, itemsPerPage));
-  }, [data, itemsPerPage]);
+    setNumPages(calcNumPages());
+  }, [data, itemsPerPage, calcNumPages]);
 
   // Effect to ensure that when data changes, we go back to page 1
   useEffect(() => {
@@ -200,7 +204,7 @@ export const usePagination = (
       const center = currentPage;
       var start =
         center -
-        Math.floor((pageGroupLimit - (pageGroupLimit % 2 == 0 ? 1 : 0)) / 2);
+        Math.floor((pageGroupLimit - (pageGroupLimit % 2 === 0 ? 1 : 0)) / 2);
       var end = center + Math.floor(pageGroupLimit / 2);
       if (start < 1) {
         start = 1;

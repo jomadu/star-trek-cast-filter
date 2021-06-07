@@ -1,49 +1,26 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { useGetCharacters, useGetEpisode, usePagination } from "../utils";
+import { useGetCharacters, usePagination } from "../utils";
 import Pagination from "../Pagination/Pagination";
 import EpisodeResultListItem from "../EpisodeResultListItem/EpisodeResultListItem";
+import EpisodeResultDetail from "../EpisodeResultDetail/EpisodeResultDetail";
 
 const Episodes = ({ characters }) => {
-  const [selectedRow, setSelectedRow] = useState(null);
-  const [episodes, setEpisodes] = useState([]);
+  // Searching
   const [
     characterData,
     characterDataIsLoading,
     characterDataError,
     setCharacterUids,
   ] = useGetCharacters(characters);
-  const [episode, episodeIsLoading, episodeError, setUid] = useGetEpisode(null);
 
-  const {
-    pageData,
-    currentPage,
-    numPages,
-    pageGroup,
-    setData,
-    setItemsPerPage,
-    setPageGroupLimit,
-    goToPage,
-    goToFirstPage,
-    goToLastPage,
-    goToPreviousPage,
-    goToNextPage,
-  } = usePagination(null, 5, 3);
-
-  useEffect(() => {
-    setSelectedRow(null);
-  }, [pageData, currentPage, numPages, pageGroup]);
-
-  useEffect(() => {
-    setData(episodes);
-  }, [episodes]);
+  const [episodes, setEpisodes] = useState([]);
 
   useEffect(() => {
     setCharacterUids(characters);
   }, [characters, setCharacterUids]);
 
   useEffect(() => {
-    setSelectedRow(null);
     setEpisodes([]);
     if (characterDataError) {
       console.log("error");
@@ -70,15 +47,35 @@ const Episodes = ({ characters }) => {
     }
   }, [characterData, characterDataIsLoading, characterDataError]);
 
+  // Pagination
+  const {
+    pageData,
+    currentPage,
+    numPages,
+    pageGroup,
+    setData,
+    goToPage,
+    goToFirstPage,
+    goToLastPage,
+    goToPreviousPage,
+    goToNextPage,
+  } = usePagination(null, 5, 3);
+
   useEffect(() => {
-    if (pageData.length > selectedRow) {
-      setUid(pageData[selectedRow]);
-    }
-  }, [selectedRow, setUid]);
+    setData(episodes);
+  }, [episodes, setData]);
+
+  // Selection
+  const [selectedRow, setSelectedRow] = useState(null);
+
+  useEffect(() => {
+    setSelectedRow(null);
+  }, [pageData, currentPage, numPages, pageGroup]);
 
   const handleSelectResultListItem = (row) => () => setSelectedRow(row);
 
-  const getEpisodes = () => {
+  // Components
+  const getEpisodesListComp = () => {
     var results;
     results = (
       <div>
@@ -106,22 +103,19 @@ const Episodes = ({ characters }) => {
     return results;
   };
 
-  var detailComp;
-  if (selectedRow) {
-    if (episodeError) {
-      detailComp = <p>{episodeError}</p>;
-    } else if (episodeIsLoading) {
-      detailComp = <p>loading...</p>;
-    } else if (episode) {
-      detailComp = <p>{episode.episode.title}</p>;
+  const getSelectedEpisodeDetailsComp = () => {
+    if (selectedRow === null) {
+      return null;
+    } else {
+      return <EpisodeResultDetail uid={pageData[selectedRow]} />;
     }
-  }
+  };
 
   return (
     <div>
       <h2>Episodes</h2>
-      {getEpisodes()}
-      {detailComp}
+      {getEpisodesListComp()}
+      {getSelectedEpisodeDetailsComp()}
     </div>
   );
 };
