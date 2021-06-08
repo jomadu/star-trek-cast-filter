@@ -5,20 +5,20 @@ import Pagination from "../Pagination/Pagination";
 import EpisodeResultListItem from "../EpisodeResultListItem/EpisodeResultListItem";
 import EpisodeResultDetail from "../EpisodeResultDetail/EpisodeResultDetail";
 
-const Episodes = ({ characters }) => {
+const Episodes = ({ characterUids }) => {
   // Searching
   const [
     characterData,
     characterDataIsLoading,
     characterDataError,
     setCharacterUids,
-  ] = useGetCharacters(characters);
+  ] = useGetCharacters(characterUids);
 
   const [episodes, setEpisodes] = useState([]);
 
   useEffect(() => {
-    setCharacterUids(characters);
-  }, [characters, setCharacterUids]);
+    setCharacterUids(characterUids);
+  }, [characterUids, setCharacterUids]);
 
   useEffect(() => {
     setEpisodes([]);
@@ -121,7 +121,7 @@ const Episodes = ({ characters }) => {
 };
 
 Episodes.propTypes = {
-  characters: PropTypes.arrayOf(PropTypes.string).isRequired,
+  characterUids: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default Episodes;

@@ -6,7 +6,11 @@ import CharacterResultDetail from "../CharacterResultDetail/CharacterResultDetai
 import Pagination from "../Pagination/Pagination";
 import CharacterAvatar from "../CharacterAvatar/CharacterAvatar";
 
-const CastCreator = ({ characters, onAddCharacter, onRemoveCharacter }) => {
+const CastCreator = ({
+  characterUids,
+  onAddCharacterUid,
+  onRemoveCharacter,
+}) => {
   // Searching
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, isLoading, error, name, setName] =
@@ -55,7 +59,7 @@ const CastCreator = ({ characters, onAddCharacter, onRemoveCharacter }) => {
   };
 
   // Adding and Removal of Characters
-  const handleAddCharacter = (uid) => () => onAddCharacter(uid);
+  const handleAddCharacter = (uid) => () => onAddCharacterUid(uid);
   const handleRemoveCharacter = (uid) => () => onRemoveCharacter(uid);
 
   // Components
@@ -119,7 +123,7 @@ const CastCreator = ({ characters, onAddCharacter, onRemoveCharacter }) => {
     return (
       <div>
         <h3>Cast:</h3>
-        {characters.map((uid) => (
+        {characterUids.map((uid) => (
           <CharacterAvatar
             uid={uid}
             onRemove={handleRemoveCharacter(uid)}
@@ -148,9 +152,9 @@ const CastCreator = ({ characters, onAddCharacter, onRemoveCharacter }) => {
 };
 
 CastCreator.propTypes = {
-  characters: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onAddCharacter: PropTypes.func.isRequired,
-  onRemoveCharacter: PropTypes.func.isRequired,
+  characterUids: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onAddCharacterUid: PropTypes.func.isRequired,
+  onRemoveCharacterUid: PropTypes.func.isRequired,
 };
 
 export default CastCreator;

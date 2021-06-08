@@ -3,26 +3,27 @@ import Episodes from "../Episodes/Episodes";
 import CastCreator from "../CastCreator/CastCreator";
 
 const App = () => {
-  const [characters, setCharacters] = useState([]);
+  const [characterUids, setCharacterUids] = useState([]);
 
-  const handleAddCharacter = (uid) => {
-    if (!characters.includes(uid)) {
-      setCharacters([...characters, uid]);
+  const handleAddCharacterUid = (uid) => {
+    if (!characterUids.includes(uid)) {
+      setCharacterUids([...characterUids, uid]);
     }
   };
 
-  const handleRemoveCharacter = (uid) => {
-    setCharacters(characters.filter((_uid) => _uid !== uid));
+  const handleRemoveCharacterUid = (uid) => {
+    setCharacterUids(characterUids.filter((_uid) => _uid !== uid));
   };
+
   return (
     <div>
       <h1>Star Trek Cast Filter</h1>
       <CastCreator
-        characters={characters}
-        onAddCharacter={handleAddCharacter}
-        onRemoveCharacter={handleRemoveCharacter}
+        characterUids={characterUids}
+        onAddCharacterUid={handleAddCharacterUid}
+        onRemoveCharacter={handleRemoveCharacterUid}
       />
-      <Episodes characters={characters} />
+      <Episodes characterUids={characterUids} />
     </div>
   );
 };
