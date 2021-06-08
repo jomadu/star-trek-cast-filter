@@ -82,12 +82,12 @@ const CastCreator = ({
     var title;
     var results;
     if (error) {
-      title = <h2>Error when searching for "{name}"</h2>;
+      title = <h3>Error when searching for "{name}"</h3>;
     } else if (isLoading) {
-      title = <h2>Searching for "{name}" ...</h2>;
+      title = <h3>Searching for "{name}" ...</h3>;
     } else if (searchResults !== null) {
       if (pageData.length) {
-        title = <h2>Results for "{name}":</h2>;
+        title = <h3>Results for "{name}":</h3>;
         results = (
           <div>
             <ul>
@@ -104,7 +104,7 @@ const CastCreator = ({
           </div>
         );
       } else {
-        title = <h2>No search results for "{name}"</h2>;
+        title = <h3>No search results for "{name}"</h3>;
       }
     }
     return (
@@ -139,22 +139,30 @@ const CastCreator = ({
   };
 
   const getCastComp = () => {
+    var cast;
+    if (Array.isArray(characterUids) && characterUids.length) {
+      cast = characterUids.map((uid) => (
+        <CharacterAvatar
+          uid={uid}
+          onRemove={handleRemoveCharacter(uid)}
+          key={uid}
+        />
+      ));
+    } else {
+      cast = <h3>No cast members. Add some!</h3>;
+    }
+
     return (
       <div>
-        <h3>Cast:</h3>
-        {characterUids.map((uid) => (
-          <CharacterAvatar
-            uid={uid}
-            onRemove={handleRemoveCharacter(uid)}
-            key={uid}
-          />
-        ))}
+        <h2>Cast</h2>
+        {cast}
       </div>
     );
   };
 
   return (
     <div>
+      <h2>Character Search</h2>
       <form onSubmit={handleSearch}>
         <input
           type="text"
