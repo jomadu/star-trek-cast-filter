@@ -86,6 +86,8 @@ const Episodes = ({ characterUids }) => {
       title = <h3>Error when searching for episodes.</h3>;
     } else if (isLoading) {
       title = <h3>Searching for episodes with your cast ...</h3>;
+    } else if (characterData === null) {
+      title = <h3>No episodes to binge yet. Try adding some cast members!</h3>;
     } else if (characterData !== null) {
       if (pageData.length) {
         title = <h3>Episodes with your cast:</h3>;

@@ -82,12 +82,12 @@ const CastCreator = ({
     var title;
     var results;
     if (error) {
-      title = <h3>Error when searching for "{name}"</h3>;
+      title = <h3>Error when searching for character "{name}"</h3>;
     } else if (isLoading) {
-      title = <h3>Searching for "{name}" ...</h3>;
+      title = <h3>Searching for character "{name}" ...</h3>;
     } else if (searchResults !== null) {
       if (pageData.length) {
-        title = <h3>Results for "{name}":</h3>;
+        title = <h3>Characters matching "{name}":</h3>;
         results = (
           <div>
             <ul>
@@ -150,7 +150,15 @@ const CastCreator = ({
         />
       ));
     } else {
-      cast = <h3>No cast members. Add some!</h3>;
+      cast = (
+        <div>
+          <h3>No cast members have been added yet.</h3>
+          <p>
+            Start by searching for a character, click the search result, then
+            click add.
+          </p>
+        </div>
+      );
     }
 
     return (
