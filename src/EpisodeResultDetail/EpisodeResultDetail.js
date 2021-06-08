@@ -11,6 +11,11 @@ const StyledTable = styled.table`
   td {
     border: 1px solid black;
   }
+
+  & caption {
+    font-weight: bold;
+    margin: 3px;
+  }
 `;
 
 const StyledList = styled.ul`

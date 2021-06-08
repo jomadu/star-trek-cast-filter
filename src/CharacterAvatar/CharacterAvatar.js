@@ -7,7 +7,7 @@ const CharacterAvatar = ({ uid, onRemove }) => {
     <div>
       <CharacterResultDetail uid={uid} />
       <button type="button" onClick={onRemove}>
-        Remove
+        Remove From Cast
       </button>
     </div>
   );

@@ -14,6 +14,7 @@ const StyledTable = styled.table`
 
   & caption {
     font-weight: bold;
+    margin: 3px;
   }
 `;
 

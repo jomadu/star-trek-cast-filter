@@ -91,7 +91,13 @@ const Episodes = ({ characterUids }) => {
     setSelectedRow(null);
   }, [pageData, currentPage, numPages, pageGroup]);
 
-  const handleSelect = (row) => () => setSelectedRow(row);
+  const handleSelect = (row) => () => {
+    if (row === selectedRow) {
+      setSelectedRow(null);
+    } else {
+      setSelectedRow(row);
+    }
+  };
 
   // Components
   const getListComp = () => {
@@ -142,7 +148,7 @@ const Episodes = ({ characterUids }) => {
     ) {
       return (
         <div>
-          <h3>Episode Details:</h3>
+          <h3>Selected Episode Details:</h3>
           <EpisodeResultDetail uid={pageData[selectedRow]} />
         </div>
       );
@@ -153,7 +159,7 @@ const Episodes = ({ characterUids }) => {
 
   return (
     <div>
-      <h2>Episodes</h2>
+      <h2>Filtered Episodes</h2>
       {getListComp()}
       {getDetailComp()}
     </div>

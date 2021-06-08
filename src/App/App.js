@@ -18,6 +18,23 @@ const App = () => {
   return (
     <div>
       <h1>Star Trek Cast Filter</h1>
+      <p>Find episodes that contain all your favorite characters by:</p>
+      <ol>
+        <li>
+          Entering the character's name to the search field (e.g. "Geordi La
+          Forge", "Spot")
+        </li>
+        <li>Clicking "Search"</li>
+        <li>Clicking on a search result to bring up the character details</li>
+        <li>
+          Clicking the "Add To Cast" button in the character details to add the
+          character to your cast
+        </li>
+        <li>
+          Clicking the "Remove From Cast" button to remove the character to your
+          cast
+        </li>
+      </ol>
       <CastCreator
         characterUids={characterUids}
         onAddCharacterUid={handleAddCharacterUid}

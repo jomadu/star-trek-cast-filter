@@ -146,7 +146,7 @@ const CastCreator = ({
             value="Add"
             onClick={handleAddCharacter(pageData[selectedRow])}
           >
-            Add
+            Add To Cast
           </button>
         </div>
       );
@@ -158,23 +158,19 @@ const CastCreator = ({
   const getCastComp = () => {
     var cast;
     if (Array.isArray(characterUids) && characterUids.length) {
-      cast = characterUids.map((uid) => (
-        <CharacterAvatar
-          uid={uid}
-          onRemove={handleRemoveCharacter(uid)}
-          key={uid}
-        />
-      ));
-    } else {
       cast = (
-        <div>
-          <h3>No cast members have been added yet.</h3>
-          <p>
-            Start by searching for a character, click the search result, then
-            click add.
-          </p>
+        <div style={{ display: "flex" }}>
+          {characterUids.map((uid) => (
+            <CharacterAvatar
+              uid={uid}
+              onRemove={handleRemoveCharacter(uid)}
+              key={uid}
+            />
+          ))}
         </div>
       );
+    } else {
+      cast = <h3>No cast members have been added yet.</h3>;
     }
 
     return (
