@@ -7,45 +7,37 @@ import EpisodeResultDetail from "../EpisodeResultDetail/EpisodeResultDetail";
 
 const Episodes = ({ characterUids }) => {
   // Searching
-  const [
-    characterData,
-    characterDataIsLoading,
-    characterDataError,
-    setCharacterUids,
-  ] = useGetCharacters(characterUids);
+  const [characterData, isLoading, error, setUids] =
+    useGetCharacters(characterUids);
 
   const [episodes, setEpisodes] = useState([]);
 
   useEffect(() => {
-    setCharacterUids(characterUids);
-  }, [characterUids, setCharacterUids]);
+    setUids(characterUids);
+  }, [characterUids, setUids]);
 
   useEffect(() => {
     setEpisodes([]);
-    if (characterDataError) {
-      console.log("error");
-    } else if (characterDataIsLoading) {
-      console.log("loading");
-    } else if (characterData) {
-      var counter = {};
+    if (!error && !isLoading && characterData) {
+      var episodeCounter = {};
       characterData.forEach((d) => {
         d.character.episodes.forEach((e) => {
-          if (!(e.uid in counter)) {
-            counter[e.uid] = 0;
+          if (!(e.uid in episodeCounter)) {
+            episodeCounter[e.uid] = 0;
           }
-          counter[e.uid] += 1;
+          episodeCounter[e.uid] += 1;
         });
       });
 
-      var joined = [];
-      Object.keys(counter).forEach((e) => {
-        if (counter[e] === characterData.length) {
-          joined.push(e);
+      var characterEpisodesInnerJoin = [];
+      Object.keys(episodeCounter).forEach((e) => {
+        if (episodeCounter[e] === characterData.length) {
+          characterEpisodesInnerJoin.push(e);
         }
       });
-      setEpisodes(joined);
+      setEpisodes(characterEpisodesInnerJoin);
     }
-  }, [characterData, characterDataIsLoading, characterDataError]);
+  }, [characterData, isLoading, error]);
 
   // Pagination
   const {
@@ -65,6 +57,18 @@ const Episodes = ({ characterUids }) => {
     setData(episodes);
   }, [episodes, setData]);
 
+  const paginationComp = (
+    <Pagination
+      pageGroup={pageGroup}
+      currentPage={currentPage}
+      onGoToPageClicked={goToPage}
+      onGoToFirstPageClicked={goToFirstPage}
+      onGoToLastPageClicked={goToLastPage}
+      onGoToPreviousPageClicked={goToPreviousPage}
+      onGoToNextPageClicked={goToNextPage}
+    />
+  );
+
   // Selection
   const [selectedRow, setSelectedRow] = useState(null);
 
@@ -72,38 +76,47 @@ const Episodes = ({ characterUids }) => {
     setSelectedRow(null);
   }, [pageData, currentPage, numPages, pageGroup]);
 
-  const handleSelectResultListItem = (row) => () => setSelectedRow(row);
+  const handleSelect = (row) => () => setSelectedRow(row);
 
   // Components
-  const getEpisodesListComp = () => {
+  const getListComp = () => {
+    var title;
     var results;
-    results = (
+    if (error) {
+      title = <h3>Error when searching for episodes.</h3>;
+    } else if (isLoading) {
+      title = <h3>Searching for episodes with your cast ...</h3>;
+    } else if (characterData !== null) {
+      if (pageData.length) {
+        title = <h3>Episodes with your cast:</h3>;
+        results = (
+          <div>
+            <ul>
+              {pageData.map((uid, idx) => (
+                <EpisodeResultListItem
+                  uid={uid}
+                  onSelect={handleSelect(idx)}
+                  selected={idx === selectedRow}
+                  key={uid}
+                />
+              ))}
+            </ul>
+            {paginationComp}
+          </div>
+        );
+      } else {
+        title = <h3>There are no episodes that have your entire cast.</h3>;
+      }
+    }
+    return (
       <div>
-        <ul>
-          {pageData.map((uid, idx) => (
-            <EpisodeResultListItem
-              uid={uid}
-              onSelect={handleSelectResultListItem(idx)}
-              selected={idx === selectedRow}
-              key={uid}
-            />
-          ))}
-        </ul>
-        <Pagination
-          pageGroup={pageGroup}
-          currentPage={currentPage}
-          onGoToPageClicked={goToPage}
-          onGoToFirstPageClicked={goToFirstPage}
-          onGoToLastPageClicked={goToLastPage}
-          onGoToPreviousPageClicked={goToPreviousPage}
-          onGoToNextPageClicked={goToNextPage}
-        />
+        {title}
+        {results}
       </div>
     );
-    return results;
   };
 
-  const getSelectedEpisodeDetailsComp = () => {
+  const getDetailComp = () => {
     if (selectedRow === null) {
       return null;
     } else {
@@ -114,8 +127,8 @@ const Episodes = ({ characterUids }) => {
   return (
     <div>
       <h2>Episodes</h2>
-      {getEpisodesListComp()}
-      {getSelectedEpisodeDetailsComp()}
+      {getListComp()}
+      {getDetailComp()}
     </div>
   );
 };
