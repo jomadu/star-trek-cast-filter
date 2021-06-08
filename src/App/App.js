@@ -5,14 +5,14 @@ import CastCreator from "../CastCreator/CastCreator";
 const App = () => {
   const [characters, setCharacters] = useState([]);
 
-  const handleAddCharacter = (id) => {
-    if (!characters.includes(id)) {
-      setCharacters([...characters, id]);
+  const handleAddCharacter = (uid) => {
+    if (!characters.includes(uid)) {
+      setCharacters([...characters, uid]);
     }
   };
 
-  const handleRemoveCharacter = (id) => {
-    setCharacters(characters.filter((_id) => _id !== id));
+  const handleRemoveCharacter = (uid) => {
+    setCharacters(characters.filter((_uid) => _uid !== uid));
   };
   return (
     <div>
