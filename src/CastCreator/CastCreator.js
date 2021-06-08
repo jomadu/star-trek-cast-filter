@@ -82,26 +82,30 @@ const CastCreator = ({
     var title;
     var results;
     if (error) {
-      title = <h2>Error when searching: "{name}"</h2>;
+      title = <h2>Error when searching for "{name}"</h2>;
     } else if (isLoading) {
       title = <h2>Searching for "{name}" ...</h2>;
-    } else {
-      title = <h2>Results for "{name}":</h2>;
-      results = (
-        <div>
-          <ul>
-            {pageData.map((uid, idx) => (
-              <CharacterResultListItem
-                uid={uid}
-                onSelect={handleSelect(idx)}
-                selected={idx === selectedRow}
-                key={uid}
-              />
-            ))}
-          </ul>
-          {paginationComp}
-        </div>
-      );
+    } else if (searchResults !== null) {
+      if (pageData.length) {
+        title = <h2>Results for "{name}":</h2>;
+        results = (
+          <div>
+            <ul>
+              {pageData.map((uid, idx) => (
+                <CharacterResultListItem
+                  uid={uid}
+                  onSelect={handleSelect(idx)}
+                  selected={idx === selectedRow}
+                  key={uid}
+                />
+              ))}
+            </ul>
+            {paginationComp}
+          </div>
+        );
+      } else {
+        title = <h2>No search results for "{name}"</h2>;
+      }
     }
     return (
       <div>
