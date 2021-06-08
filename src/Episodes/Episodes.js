@@ -124,15 +124,8 @@ const Episodes = ({ characterUids }) => {
     ) {
       return (
         <div>
-          <h3>Character Details:</h3>
+          <h3>Episode Details:</h3>
           <EpisodeResultDetail uid={pageData[selectedRow]} />
-          <button
-            type="button"
-            value="Add"
-            onClick={handleAddCharacter(pageData[selectedRow])}
-          >
-            Add
-          </button>
         </div>
       );
     } else {
