@@ -9,21 +9,20 @@ const CharacterResultDetail = ({ uid }) => {
     setUid(uid);
   }, [uid, setUid]);
 
-  var renderedComponent;
+  var text;
   if (error) {
-    renderedComponent = <p>{error}</p>;
+    text = "Error";
   } else if (isLoading) {
-    renderedComponent = <p>loading...</p>;
+    text = "Loading...";
   } else if (data) {
-    renderedComponent = (
-      <p>
-        Name: {data.character.name}, Serial Number:
-        {data.character.serialNumber}
-      </p>
-    );
+    text = `Name: ${data.character.name}, Serial Number: ${data.character.serialNumber}`;
   }
 
-  return <div>{renderedComponent}</div>;
+  return (
+    <div>
+      <p>{text}</p>
+    </div>
+  );
 };
 
 CharacterResultDetail.propTypes = {

@@ -19,10 +19,10 @@ const Pagination = ({
         {"<"}
       </button>
       {pageGroup.map((i) => (
-        <div onClick={onGoToPageClicked(i)} key={i}>
+        <button onClick={onGoToPageClicked(i)} key={i}>
           {i}
-          {i === currentPage && " *"}
-        </div>
+          {i === currentPage && "*"}
+        </button>
       ))}
       <button type="button" onClick={onGoToNextPageClicked}>
         {">"}
