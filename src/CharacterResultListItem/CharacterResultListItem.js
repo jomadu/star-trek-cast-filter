@@ -16,7 +16,7 @@ const CharacterResultListItem = ({ uid, selected, onSelect }) => {
     } episodes ${selected ? " *" : ""}`;
   }
 
-  return <li onClick={() => onSelect(uid)}>{text}</li>;
+  return <div onClick={() => onSelect(uid)}>{text}</div>;
 };
 
 CharacterResultListItem.propTypes = {

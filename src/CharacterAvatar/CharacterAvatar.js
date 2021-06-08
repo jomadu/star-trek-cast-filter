@@ -1,22 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { useGetCharacter } from "../utils";
+import CharacterResultDetail from "../CharacterResultDetail/CharacterResultDetail";
 
 const CharacterAvatar = ({ uid, onRemove }) => {
-  const [data, isLoading, error] = useGetCharacter(uid);
-
-  var text;
-  if (error) {
-    text = "Error.";
-  } else if (isLoading) {
-    text = "Loading...";
-  } else if (data) {
-    text = `Name: ${data.character.name}, Serial Number: ${data.character.serialNumber}`;
-  }
-
   return (
     <div>
-      <p>{text}</p>
+      <CharacterResultDetail uid={uid} />
       <button type="button" onClick={onRemove}>
         Remove
       </button>

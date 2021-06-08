@@ -1,9 +1,29 @@
 import React, { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
+
+const StyledButton = styled.button`
+  &.first {
+    margin: 0px 3px 0px 0px;
+  }
+  &.prev {
+    margin: 0px 3px 0px 0px;
+  }
+  &.page {
+    margin: 1px;
+  }
+  &.next {
+    margin: 0px 0px 0px 3px;
+  }
+  &.last {
+    margin: 0px 0px 0px 3px;
+  }
+`;
 
 const Pagination = ({
   pageGroup,
   currentPage,
+  numPages,
   onGoToPageClicked,
   onGoToFirstPageClicked,
   onGoToLastPageClicked,
@@ -12,24 +32,40 @@ const Pagination = ({
 }) => {
   return (
     <div>
-      <button type="button" onClick={onGoToFirstPageClicked}>
-        {"|<"}
-      </button>
-      <button type="button" onClick={onGoToPreviousPageClicked}>
-        {"<"}
-      </button>
+      <StyledButton
+        type="button"
+        className={"first"}
+        onClick={onGoToFirstPageClicked}
+      >
+        First (1)
+      </StyledButton>
+      <StyledButton
+        type="button"
+        className={"prev"}
+        onClick={onGoToPreviousPageClicked}
+      >
+        {"Prev"}
+      </StyledButton>
       {pageGroup.map((i) => (
-        <button onClick={onGoToPageClicked(i)} key={i}>
+        <StyledButton className={"page"} onClick={onGoToPageClicked(i)} key={i}>
           {i}
           {i === currentPage && "*"}
-        </button>
+        </StyledButton>
       ))}
-      <button type="button" onClick={onGoToNextPageClicked}>
-        {">"}
-      </button>
-      <button type="button" onClick={onGoToLastPageClicked}>
-        {">|"}
-      </button>
+      <StyledButton
+        type="button"
+        className={"next"}
+        onClick={onGoToNextPageClicked}
+      >
+        {"Next"}
+      </StyledButton>
+      <StyledButton
+        type="button"
+        className={"last"}
+        onClick={onGoToLastPageClicked}
+      >
+        Last ({numPages})
+      </StyledButton>
     </div>
   );
 };
@@ -37,6 +73,7 @@ const Pagination = ({
 Pagination.propTypes = {
   pageGroup: PropTypes.array.isRequired,
   currentPage: PropTypes.node.isRequired,
+  numPages: PropTypes.node.isRequired,
   onGoToPageClicked: PropTypes.func.isRequired,
   onGoToFirstPageClicked: PropTypes.func.isRequired,
   onGoToLastPageClicked: PropTypes.func.isRequired,

@@ -13,10 +13,14 @@ const EpisodeResultListItem = ({ uid, selected, onSelect }) => {
   } else if (isLoading) {
     text = "Loading...";
   } else if (episode) {
-    text = `${episode.episode.title}${selected ? " *" : ""}`;
+    text = `${episode.episode.series.title} - S${
+      episode.episode.seasonNumber
+    }E${episode.episode.episodeNumber} - ${episode.episode.title}${
+      selected ? " *" : ""
+    }`;
   }
 
-  return <li onClick={handleClick}>{text}</li>;
+  return <div onClick={handleClick}>{text}</div>;
 };
 
 EpisodeResultListItem.propTypes = {

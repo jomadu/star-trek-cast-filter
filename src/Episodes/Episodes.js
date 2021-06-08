@@ -4,6 +4,20 @@ import { useGetCharacters } from "../utils";
 import Pagination, { usePagination } from "../Pagination/Pagination";
 import EpisodeResultListItem from "../EpisodeResultListItem/EpisodeResultListItem";
 import EpisodeResultDetail from "../EpisodeResultDetail/EpisodeResultDetail";
+import styled from "styled-components";
+
+const StyledList = styled.ul`
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+`;
+const StyledListItem = styled.li`
+  padding-top: 5px;
+  padding-bottom: 5px;
+  :hover {
+    background-color: lightblue;
+  }
+`;
 
 const Episodes = ({ characterUids }) => {
   // Searching
@@ -61,6 +75,7 @@ const Episodes = ({ characterUids }) => {
     <Pagination
       pageGroup={pageGroup}
       currentPage={currentPage}
+      numPages={numPages}
       onGoToPageClicked={goToPage}
       onGoToFirstPageClicked={goToFirstPage}
       onGoToLastPageClicked={goToLastPage}
@@ -93,16 +108,17 @@ const Episodes = ({ characterUids }) => {
         title = <h3>Episodes with your cast:</h3>;
         results = (
           <div>
-            <ul>
+            <StyledList>
               {pageData.map((uid, idx) => (
-                <EpisodeResultListItem
-                  uid={uid}
-                  onSelect={handleSelect(idx)}
-                  selected={idx === selectedRow}
-                  key={uid}
-                />
+                <StyledListItem key={uid}>
+                  <EpisodeResultListItem
+                    uid={uid}
+                    onSelect={handleSelect(idx)}
+                    selected={idx === selectedRow}
+                  />
+                </StyledListItem>
               ))}
-            </ul>
+            </StyledList>
             {paginationComp}
           </div>
         );
