@@ -117,10 +117,26 @@ const Episodes = ({ characterUids }) => {
   };
 
   const getDetailComp = () => {
-    if (selectedRow === null) {
-      return null;
+    if (
+      selectedRow !== null &&
+      selectedRow >= 0 &&
+      selectedRow < pageData.length
+    ) {
+      return (
+        <div>
+          <h3>Character Details:</h3>
+          <EpisodeResultDetail uid={pageData[selectedRow]} />
+          <button
+            type="button"
+            value="Add"
+            onClick={handleAddCharacter(pageData[selectedRow])}
+          >
+            Add
+          </button>
+        </div>
+      );
     } else {
-      return <EpisodeResultDetail uid={pageData[selectedRow]} />;
+      return null;
     }
   };
 
