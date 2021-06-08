@@ -10,7 +10,7 @@ Episodes will be listed that contain all the selected cast members. Users will b
 
 ## Wireframes
 
-![App Wireframe](./images/star-trek-cast-filter.png)
+![App Wireframe](./images/wireframes.png)
 
 ## Dependencies
 
