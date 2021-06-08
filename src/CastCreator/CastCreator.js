@@ -116,18 +116,26 @@ const CastCreator = ({
   };
 
   const getSelectedResultDetailsComp = () => {
-    return selectedRow !== null ? (
-      <div>
-        <CharacterResultDetail uid={pageData[selectedRow]} />
-        <button
-          type="button"
-          value="Add"
-          onClick={handleAddCharacter(pageData[selectedRow])}
-        >
-          Add
-        </button>
-      </div>
-    ) : null;
+    if (
+      selectedRow !== null &&
+      selectedRow >= 0 &&
+      selectedRow < pageData.length
+    ) {
+      return (
+        <div>
+          <CharacterResultDetail uid={pageData[selectedRow]} />
+          <button
+            type="button"
+            value="Add"
+            onClick={handleAddCharacter(pageData[selectedRow])}
+          >
+            Add
+          </button>
+        </div>
+      );
+    } else {
+      return null;
+    }
   };
 
   const getCastComp = () => {
