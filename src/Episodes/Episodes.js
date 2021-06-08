@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { useGetCharacters, usePagination } from "../utils";
-import Pagination from "../Pagination/Pagination";
+import { useGetCharacters } from "../utils";
+import Pagination, { usePagination } from "../Pagination/Pagination";
 import EpisodeResultListItem from "../EpisodeResultListItem/EpisodeResultListItem";
 import EpisodeResultDetail from "../EpisodeResultDetail/EpisodeResultDetail";
 

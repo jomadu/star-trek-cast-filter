@@ -17,7 +17,7 @@ const CharacterAvatar = ({ uid, onRemove }) => {
   return (
     <div>
       <p>{text}</p>
-      <button type="button" onClick={() => onRemove()}>
+      <button type="button" onClick={onRemove}>
         Remove
       </button>
     </div>

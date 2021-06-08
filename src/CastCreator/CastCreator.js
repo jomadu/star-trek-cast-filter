@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { useSearchCharacter, usePagination } from "../utils";
+import { useSearchCharacter } from "../utils";
 import CharacterResultListItem from "../CharacterResultListItem/CharacterResultListItem";
 import CharacterResultDetail from "../CharacterResultDetail/CharacterResultDetail";
-import Pagination from "../Pagination/Pagination";
+import Pagination, { usePagination } from "../Pagination/Pagination";
 import CharacterAvatar from "../CharacterAvatar/CharacterAvatar";
 
 const CastCreator = ({
   characterUids,
   onAddCharacterUid,
-  onRemoveCharacter,
+  onRemoveCharacterUid,
 }) => {
   // Searching
   const [searchTerm, setSearchTerm] = useState("");
@@ -39,9 +39,24 @@ const CastCreator = ({
     goToNextPage,
   } = usePagination(null, 5, 3);
 
+  // We're paginating the search results, so whenever the search results change,
+  // we need to update the data using setData
   useEffect(() => {
     setData(searchResults?.characters.map((c) => c.uid));
   }, [searchResults, setData]);
+
+  // The Pagination
+  const paginationComp = (
+    <Pagination
+      pageGroup={pageGroup}
+      currentPage={currentPage}
+      onGoToPageClicked={goToPage}
+      onGoToFirstPageClicked={goToFirstPage}
+      onGoToLastPageClicked={goToLastPage}
+      onGoToPreviousPageClicked={goToPreviousPage}
+      onGoToNextPageClicked={goToNextPage}
+    />
+  );
 
   // Selection
   const [selectedRow, setSelectedRow] = useState(null);
@@ -60,7 +75,7 @@ const CastCreator = ({
 
   // Adding and Removal of Characters
   const handleAddCharacter = (uid) => () => onAddCharacterUid(uid);
-  const handleRemoveCharacter = (uid) => () => onRemoveCharacter(uid);
+  const handleRemoveCharacter = (uid) => () => onRemoveCharacterUid(uid);
 
   // Components
   const getSearchResultsComp = () => {
@@ -84,15 +99,7 @@ const CastCreator = ({
               />
             ))}
           </ul>
-          <Pagination
-            pageGroup={pageGroup}
-            currentPage={currentPage}
-            onGoToPageClicked={goToPage}
-            onGoToFirstPageClicked={goToFirstPage}
-            onGoToLastPageClicked={goToLastPage}
-            onGoToPreviousPageClicked={goToPreviousPage}
-            onGoToNextPageClicked={goToNextPage}
-          />
+          {paginationComp}
         </div>
       );
     }

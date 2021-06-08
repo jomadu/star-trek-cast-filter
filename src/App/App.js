@@ -21,7 +21,7 @@ const App = () => {
       <CastCreator
         characterUids={characterUids}
         onAddCharacterUid={handleAddCharacterUid}
-        onRemoveCharacter={handleRemoveCharacterUid}
+        onRemoveCharacterUid={handleRemoveCharacterUid}
       />
       <Episodes characterUids={characterUids} />
     </div>
