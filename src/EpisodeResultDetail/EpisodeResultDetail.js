@@ -1,6 +1,32 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { useGetEpisode } from "../utils";
+import styled from "styled-components";
+
+const StyledTable = styled.table`
+  border: 1px solid black;
+  border-collapse: collapse;
+  & th,
+  tr,
+  td {
+    border: 1px solid black;
+  }
+
+  & caption {
+    font-weight: bold;
+    margin: 3px;
+  }
+`;
+
+const StyledList = styled.ul`
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+`;
+const StyledListItem = styled.li`
+  padding-top: 5px;
+  padding-bottom: 5px;
+`;
 
 const EpisodeResultDetail = ({ uid }) => {
   const [data, isLoading, error, setUid] = useGetEpisode(uid);
@@ -18,7 +44,8 @@ const EpisodeResultDetail = ({ uid }) => {
     var e = data.episode;
 
     comp = (
-      <table>
+      <StyledTable>
+        <caption>{`${e.series.title} - S${e.seasonNumber}E${e.episodeNumber} - ${e.title}`}</caption>
         <thead>
           <tr>
             <th>Attribute</th>
@@ -50,11 +77,11 @@ const EpisodeResultDetail = ({ uid }) => {
             <td>Characters</td>
             <td>
               {e.characters.length ? (
-                <ul>
+                <StyledList>
                   {e.characters.map((c) => (
-                    <li key={c.uid}>{c.name}</li>
+                    <StyledListItem key={c.uid}>{c.name}</StyledListItem>
                   ))}
-                </ul>
+                </StyledList>
               ) : (
                 "None"
               )}
@@ -64,11 +91,11 @@ const EpisodeResultDetail = ({ uid }) => {
             <td>Writers</td>
             <td>
               {e.writers.length ? (
-                <ul>
+                <StyledList>
                   {e.writers.map((w) => (
-                    <li key={w.uid}>{w.name}</li>
+                    <StyledListItem key={w.uid}>{w.name}</StyledListItem>
                   ))}
-                </ul>
+                </StyledList>
               ) : (
                 "None"
               )}
@@ -78,11 +105,11 @@ const EpisodeResultDetail = ({ uid }) => {
             <td>Teleplay Authors</td>
             <td>
               {e.teleplayAuthors.length ? (
-                <ul>
+                <StyledList>
                   {e.teleplayAuthors.map((a) => (
-                    <li key={a.uid}>{a.name}</li>
+                    <StyledListItem key={a.uid}>{a.name}</StyledListItem>
                   ))}
-                </ul>
+                </StyledList>
               ) : (
                 "None"
               )}
@@ -92,18 +119,18 @@ const EpisodeResultDetail = ({ uid }) => {
             <td>Story Authors</td>
             <td>
               {e.storyAuthors.length ? (
-                <ul>
+                <StyledList>
                   {e.storyAuthors.map((a) => (
-                    <li key={a.uid}>{a.name}</li>
+                    <StyledListItem key={a.uid}>{a.name}</StyledListItem>
                   ))}
-                </ul>
+                </StyledList>
               ) : (
                 "None"
               )}
             </td>
           </tr>
         </tbody>
-      </table>
+      </StyledTable>
     );
   }
 

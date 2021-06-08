@@ -5,6 +5,20 @@ import CharacterResultListItem from "../CharacterResultListItem/CharacterResultL
 import CharacterResultDetail from "../CharacterResultDetail/CharacterResultDetail";
 import Pagination, { usePagination } from "../Pagination/Pagination";
 import CharacterAvatar from "../CharacterAvatar/CharacterAvatar";
+import styled from "styled-components";
+
+const StyledList = styled.ul`
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+`;
+const StyledListItem = styled.li`
+  padding-top: 5px;
+  padding-bottom: 5px;
+  :hover {
+    background-color: lightblue;
+  }
+`;
 
 const CastCreator = ({
   characterUids,
@@ -50,6 +64,7 @@ const CastCreator = ({
     <Pagination
       pageGroup={pageGroup}
       currentPage={currentPage}
+      numPages={numPages}
       onGoToPageClicked={goToPage}
       onGoToFirstPageClicked={goToFirstPage}
       onGoToLastPageClicked={goToLastPage}
@@ -90,16 +105,17 @@ const CastCreator = ({
         title = <h3>Characters matching "{name}":</h3>;
         results = (
           <div>
-            <ul>
+            <StyledList>
               {pageData.map((uid, idx) => (
-                <CharacterResultListItem
-                  uid={uid}
-                  onSelect={handleSelect(idx)}
-                  selected={idx === selectedRow}
-                  key={uid}
-                />
+                <StyledListItem key={uid}>
+                  <CharacterResultListItem
+                    uid={uid}
+                    onSelect={handleSelect(idx)}
+                    selected={idx === selectedRow}
+                  />
+                </StyledListItem>
               ))}
-            </ul>
+            </StyledList>
             {paginationComp}
           </div>
         );
@@ -123,14 +139,14 @@ const CastCreator = ({
     ) {
       return (
         <div>
-          <h3>Character Details:</h3>
+          <h3>Selected Character Details:</h3>
           <CharacterResultDetail uid={pageData[selectedRow]} />
           <button
             type="button"
             value="Add"
             onClick={handleAddCharacter(pageData[selectedRow])}
           >
-            Add
+            Add To Cast
           </button>
         </div>
       );
@@ -142,23 +158,19 @@ const CastCreator = ({
   const getCastComp = () => {
     var cast;
     if (Array.isArray(characterUids) && characterUids.length) {
-      cast = characterUids.map((uid) => (
-        <CharacterAvatar
-          uid={uid}
-          onRemove={handleRemoveCharacter(uid)}
-          key={uid}
-        />
-      ));
-    } else {
       cast = (
-        <div>
-          <h3>No cast members have been added yet.</h3>
-          <p>
-            Start by searching for a character, click the search result, then
-            click add.
-          </p>
+        <div style={{ display: "flex" }}>
+          {characterUids.map((uid) => (
+            <CharacterAvatar
+              uid={uid}
+              onRemove={handleRemoveCharacter(uid)}
+              key={uid}
+            />
+          ))}
         </div>
       );
+    } else {
+      cast = <h3>No cast members have been added yet.</h3>;
     }
 
     return (

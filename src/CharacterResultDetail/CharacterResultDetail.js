@@ -1,6 +1,32 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { useGetCharacter } from "../utils";
+import styled from "styled-components";
+
+const StyledTable = styled.table`
+  border: 1px solid black;
+  border-collapse: collapse;
+  & th,
+  tr,
+  td {
+    border: 1px solid black;
+  }
+
+  & caption {
+    font-weight: bold;
+    margin: 3px;
+  }
+`;
+
+const StyledList = styled.ul`
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+`;
+const StyledListItem = styled.li`
+  padding-top: 5px;
+  padding-bottom: 5px;
+`;
 
 const CharacterResultDetail = ({ uid }) => {
   const [data, isLoading, error, setUid] = useGetCharacter(uid);
@@ -24,7 +50,8 @@ const CharacterResultDetail = ({ uid }) => {
     });
 
     comp = (
-      <table>
+      <StyledTable>
+        <caption>{c.name}</caption>
         <thead>
           <tr>
             <th>Attribute</th>
@@ -33,18 +60,16 @@ const CharacterResultDetail = ({ uid }) => {
         </thead>
         <tbody>
           <tr>
-            <td>Name</td>
-            <td>{c.name}</td>
-          </tr>
-          <tr>
             <td>Titles</td>
             <td>
               {c.titles.length ? (
-                <ul>
+                <StyledList>
                   {c.titles.map((title) => (
-                    <li key={title.uid}>{title.name}</li>
+                    <StyledListItem key={title.uid}>
+                      {title.name}
+                    </StyledListItem>
                   ))}
-                </ul>
+                </StyledList>
               ) : (
                 "None"
               )}
@@ -54,11 +79,11 @@ const CharacterResultDetail = ({ uid }) => {
             <td>Organizations</td>
             <td>
               {c.organizations.length ? (
-                <ul>
+                <StyledList>
                   {c.organizations.map((org) => (
-                    <li key={org.uid}>{org.name}</li>
+                    <StyledListItem key={org.uid}>{org.name}</StyledListItem>
                   ))}
-                </ul>
+                </StyledList>
               ) : (
                 "None"
               )}
@@ -68,11 +93,11 @@ const CharacterResultDetail = ({ uid }) => {
             <td>Series</td>
             <td>
               {series.size ? (
-                <ul>
+                <StyledList>
                   {[...series].map((series, i) => (
-                    <li key={i}>{series}</li>
+                    <StyledListItem key={i}>{series}</StyledListItem>
                   ))}
-                </ul>
+                </StyledList>
               ) : (
                 "None"
               )}
@@ -83,7 +108,7 @@ const CharacterResultDetail = ({ uid }) => {
             <td>{c.episodes.length}</td>
           </tr>
         </tbody>
-      </table>
+      </StyledTable>
     );
   }
 
