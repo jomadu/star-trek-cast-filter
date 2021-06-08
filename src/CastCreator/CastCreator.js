@@ -78,7 +78,7 @@ const CastCreator = ({
   const handleRemoveCharacter = (uid) => () => onRemoveCharacterUid(uid);
 
   // Components
-  const getSearchResultsComp = () => {
+  const getListComp = () => {
     var title;
     var results;
     if (error) {
@@ -115,7 +115,7 @@ const CastCreator = ({
     );
   };
 
-  const getSelectedResultDetailsComp = () => {
+  const getDetailComp = () => {
     if (
       selectedRow !== null &&
       selectedRow >= 0 &&
@@ -123,6 +123,7 @@ const CastCreator = ({
     ) {
       return (
         <div>
+          <h3>Character Details:</h3>
           <CharacterResultDetail uid={pageData[selectedRow]} />
           <button
             type="button"
@@ -171,8 +172,8 @@ const CastCreator = ({
         />
         <button type="submit">Search</button>
       </form>
-      {getSearchResultsComp()}
-      {getSelectedResultDetailsComp()}
+      {getListComp()}
+      {getDetailComp()}
       {getCastComp()}
     </div>
   );
