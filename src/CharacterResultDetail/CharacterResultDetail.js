@@ -22,7 +22,6 @@ const CharacterResultDetail = ({ uid }) => {
     c.episodes.forEach((e) => {
       series.add(e.series.title);
     });
-    console.log(series);
 
     comp = (
       <table>
