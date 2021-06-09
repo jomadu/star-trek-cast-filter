@@ -1,4 +1,89 @@
 import { useEffect, useState } from "react";
+const characterData = require("./characterData.json");
+const episodeData = require("./episodeData.json");
+
+const searchCharacterUrl = "http://stapi.co/api/v1/rest/character/search";
+const getCharacterUrl = "http://stapi.co/api/v1/rest/character";
+const getEpisodeUrl = "http://stapi.co/api/v1/rest/episode";
+
+const fakeLagMs = 125;
+
+const searchCharactersLocal = (name) => {
+  var characters = characterData.filter((character) => {
+    return character.name.toLowerCase().includes(name.toLowerCase());
+  });
+
+  var searchResults = {
+    characters,
+  };
+
+  return new Promise((resolve, reject) => {
+    setTimeout(
+      () => resolve(new Response(JSON.stringify(searchResults))),
+      fakeLagMs
+    );
+  });
+};
+
+const getCharacterLocal = (uid) => {
+  var character = characterData.find(
+    (character) => character.uid.toLowerCase() === uid.toLowerCase()
+  );
+
+  var searchResults = {
+    character,
+  };
+
+  return new Promise((resolve, reject) => {
+    if (!character) {
+      return setTimeout(
+        () => reject(new Error("Character not found")),
+        fakeLagMs
+      );
+    }
+
+    setTimeout(
+      () => resolve(new Response(JSON.stringify(searchResults))),
+      fakeLagMs
+    );
+  });
+};
+
+const getEpisodeLocal = (uid) => {
+  var episode = episodeData.find(
+    (episode) => episode.uid.toLowerCase() === uid.toLowerCase()
+  );
+
+  var searchResults = {
+    episode,
+  };
+
+  return new Promise((resolve, reject) => {
+    if (!episode) {
+      return setTimeout(
+        () => reject(new Error("Episode not found")),
+        fakeLagMs
+      );
+    }
+
+    setTimeout(
+      () => resolve(new Response(JSON.stringify(searchResults))),
+      fakeLagMs
+    );
+  });
+};
+
+const localFetchWrapper = (url, method) => {
+  var query = url.substring(url.indexOf("?"));
+  var searchParams = new URLSearchParams(query);
+  if (url.includes(searchCharacterUrl) && searchParams.has("name")) {
+    return searchCharactersLocal(searchParams.get("name"));
+  } else if (url.includes(getCharacterUrl) && searchParams.has("uid")) {
+    return getCharacterLocal(searchParams.get("uid"));
+  } else if (url.includes(getEpisodeUrl) && searchParams.has("uid")) {
+    return getEpisodeLocal(searchParams.get("uid"));
+  }
+};
 
 const fetchWrapper = (url, method) =>
   fetch(url, {
@@ -8,8 +93,7 @@ const fetchWrapper = (url, method) =>
     },
   });
 
-const createGetCharacterUrl = (uid) =>
-  `http://stapi.co/api/v1/rest/character?uid=${uid}`;
+const createGetCharacterUrl = (uid) => `${getCharacterUrl}?uid=${uid}`;
 
 export const useFetch = (initialUrl, initialMethod) => {
   const [url, setUrl] = useState(initialUrl);
@@ -24,7 +108,7 @@ export const useFetch = (initialUrl, initialMethod) => {
     setError(null);
 
     if (url && method) {
-      fetchWrapper(url, method)
+      localFetchWrapper(url, method)
         .then((response) => response.json())
         .then((data) => {
           setData(data);
@@ -77,7 +161,7 @@ export const useFetchParallel = (initialUrls, initialMethod) => {
 };
 
 export const useGetEpisode = (initialUid) => {
-  const createUrl = (uid) => `http://stapi.co/api/v1/rest/episode?uid=${uid}`;
+  const createUrl = (uid) => `${getEpisodeUrl}?uid=${uid}`;
 
   const [uid, setUid] = useState(initialUid);
   const [data, isLoading, error, setUrl] = useFetch(null, "GET");
@@ -116,8 +200,7 @@ export const useGetCharacters = (initialUids) => {
 };
 
 export const useSearchCharacter = (initialName) => {
-  const createUrl = (name) =>
-    `http://stapi.co/api/v1/rest/character/search?name=${name}`;
+  const createUrl = (name) => `${searchCharacterUrl}?name=${name}`;
 
   const [name, setName] = useState(initialName);
   const [data, setData] = useState(null);

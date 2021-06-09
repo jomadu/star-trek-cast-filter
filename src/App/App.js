@@ -17,12 +17,12 @@ const App = () => {
 
   return (
     <div>
-      <h1>Star Trek Cast Filter</h1>
-      <p>Find episodes that contain all your favorite characters by:</p>
+      <h1>Star Trek: The Next Generation - Episode Filter</h1>
+      <p>Find episodes that contain all your favorite TNG characters by:</p>
       <ol>
         <li>
           Entering the character's name to the search field (e.g. "Geordi La
-          Forge", "Spot")
+          Forge", "Picard")
         </li>
         <li>Clicking "Search"</li>
         <li>Clicking on a search result to bring up the character details</li>
