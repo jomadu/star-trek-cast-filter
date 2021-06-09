@@ -141,7 +141,7 @@ export const useFetchParallel = (initialUrls, initialMethod) => {
       // There are urls to fetch
       Promise.all(
         urls.map((url) =>
-          fetchWrapper(url, method).then((response) => response.json())
+          localFetchWrapper(url, method).then((response) => response.json())
         )
       )
         .then((responses) => {
